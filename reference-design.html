@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Merit Sheet — CGPA &amp; University Merit Calculators</title>
+<meta name="description" content="Free CGPA calculator and Pakistan university merit aggregate calculator for NUST, FAST, PU, UET, and GIKI.">
+<style>
+  :root{
+    --paper:#f6f1e4;
+    --ink:#1b2a4a;
+    --ink-soft:#3d4d6b;
+    --red:#a5312b;
+    --red-soft:#c65a4f;
+    --line:#c9beA3;
+    --gold:#b8923f;
+    --card:#fffdf7;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    background-image:
+      repeating-linear-gradient(var(--paper) 0 34px, rgba(27,42,74,0.055) 34px 35px);
+    color:var(--ink);
+    font-family: 'Courier New', ui-monospace, monospace;
+    line-height:1.5;
+  }
+  .display{
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+  header{
+    padding:48px 24px 20px;
+    text-align:center;
+    border-bottom:3px double var(--ink);
+    max-width:900px;
+    margin:0 auto;
+  }
+  header .eyebrow{
+    letter-spacing:.25em;
+    font-size:12px;
+    color:var(--red);
+    text-transform:uppercase;
+  }
+  header h1{
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size:42px;
+    margin:8px 0 4px;
+    font-weight:700;
+    color:var(--ink);
+  }
+  header p{
+    color:var(--ink-soft);
+    font-size:14px;
+    margin:0;
+  }
+  .stamp{
+    display:inline-block;
+    border:2px solid var(--red);
+    color:var(--red);
+    padding:4px 14px;
+    border-radius:50%;
+    transform:rotate(-6deg);
+    font-size:11px;
+    letter-spacing:.15em;
+    margin-top:14px;
+    font-weight:bold;
+  }
+
+  main{max-width:900px;margin:0 auto;padding:32px 24px 80px;}
+
+  .tabs{
+    display:flex;
+    gap:0;
+    border-bottom:3px solid var(--ink);
+    margin-bottom:28px;
+  }
+  .tab{
+    flex:1;
+    text-align:center;
+    padding:14px 8px;
+    cursor:pointer;
+    font-family: Georgia, serif;
+    font-size:17px;
+    font-weight:700;
+    color:var(--ink-soft);
+    background:transparent;
+    border:none;
+    border-bottom:4px solid transparent;
+    margin-bottom:-3px;
+  }
+  .tab.active{
+    color:var(--red);
+    border-bottom:4px solid var(--red);
+  }
+
+  .panel{display:none;}
+  .panel.active{display:block;}
+
+  .sheet{
+    background:var(--card);
+    border:1px solid var(--line);
+    box-shadow: 4px 4px 0 rgba(27,42,74,0.08);
+    padding:28px;
+    margin-bottom:24px;
+  }
+  .sheet h2{
+    font-family:Georgia, serif;
+    margin-top:0;
+    font-size:22px;
+    border-bottom:1px dashed var(--line);
+    padding-bottom:10px;
+  }
+  .field{
+    margin-bottom:16px;
+  }
+  .field label{
+    display:block;
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    color:var(--ink-soft);
+    margin-bottom:5px;
+  }
+  .row{display:flex;gap:14px;flex-wrap:wrap;}
+  .row .field{flex:1;min-width:140px;}
+  input[type=number], select{
+    width:100%;
+    padding:10px 12px;
+    font-family:inherit;
+    font-size:15px;
+    border:1px solid var(--ink-soft);
+    background:#fff;
+    color:var(--ink);
+  }
+  input:focus, select:focus{outline:2px solid var(--red-soft); outline-offset:1px;}
+
+  .uni-select{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-bottom:20px;
+  }
+  .uni-btn{
+    padding:8px 16px;
+    border:1px solid var(--ink);
+    background:#fff;
+    cursor:pointer;
+    font-family:inherit;
+    font-size:13px;
+    font-weight:bold;
+  }
+  .uni-btn.active{
+    background:var(--ink);
+    color:var(--paper);
+  }
+
+  .formula-note{
+    font-size:12px;
+    color:var(--ink-soft);
+    background:rgba(184,146,63,0.12);
+    border-left:3px solid var(--gold);
+    padding:8px 12px;
+    margin-bottom:20px;
+  }
+
+  button.calc{
+    background:var(--red);
+    color:#fff;
+    border:none;
+    padding:13px 28px;
+    font-family:Georgia, serif;
+    font-weight:bold;
+    font-size:15px;
+    letter-spacing:.03em;
+    cursor:pointer;
+  }
+  button.calc:hover{background:var(--red-soft);}
+  button.clear{
+    background:transparent;
+    border:1px solid var(--ink-soft);
+    color:var(--ink-soft);
+    padding:12px 20px;
+    font-family:inherit;
+    cursor:pointer;
+    margin-left:10px;
+  }
+
+  .result{
+    margin-top:22px;
+    padding-top:20px;
+    border-top:2px dashed var(--ink);
+    display:none;
+  }
+  .result.show{display:block;}
+  .result .big{
+    font-family:Georgia, serif;
+    font-size:52px;
+    font-weight:bold;
+    color:var(--red);
+    line-height:1;
+  }
+  .result .label{
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:.1em;
+    color:var(--ink-soft);
+  }
+  .breakdown{
+    margin-top:14px;
+    font-size:13px;
+  }
+  .breakdown div{
+    display:flex;
+    justify-content:space-between;
+    padding:4px 0;
+    border-bottom:1px dotted var(--line);
+  }
+
+  .gpa-row{
+    display:grid;
+    grid-template-columns: 2fr 1fr 1fr auto;
+    gap:10px;
+    align-items:end;
+    margin-bottom:10px;
+  }
+  .gpa-row label{font-size:11px;}
+  .remove-btn{
+    background:none;border:none;color:var(--red);cursor:pointer;font-size:18px;padding:8px;
+  }
+  .add-course{
+    background:none;
+    border:1px dashed var(--ink-soft);
+    color:var(--ink-soft);
+    padding:8px 16px;
+    cursor:pointer;
+    font-family:inherit;
+    font-size:13px;
+    margin-top:6px;
+  }
+
+  footer{
+    text-align:center;
+    padding:30px 24px 50px;
+    font-size:11px;
+    color:var(--ink-soft);
+    max-width:900px;
+    margin:0 auto;
+  }
+  article.explainer{
+    background:transparent;
+    padding-top:10px;
+    font-size:13px;
+    color:var(--ink-soft);
+  }
+  article.explainer h3{
+    color:var(--ink);
+    font-family:Georgia,serif;
+    font-size:16px;
+  }
+  @media (max-width:600px){
+    header h1{font-size:30px;}
+    .result .big{font-size:38px;}
+    .gpa-row{grid-template-columns: 1fr 1fr; grid-template-areas: "name name" "credit grade" "remove remove";}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Student Toolkit</div>
+  <h1>Merit Sheet</h1>
+  <p>CGPA calculator &amp; Pakistan university merit aggregate — no signup, instant results</p>
+  <div class="stamp">VERIFIED 2026</div>
+</header>
+
+<main>
+  <div class="tabs">
+    <button class="tab active" data-panel="cgpa">CGPA Calculator</button>
+    <button class="tab" data-panel="merit">Merit Calculator</button>
+  </div>
+
+  <!-- CGPA PANEL -->
+  <section class="panel active" id="cgpa">
+    <div class="sheet">
+      <h2>Semester CGPA Calculator</h2>
+      <div id="courseList"></div>
+      <button class="add-course" onclick="addCourseRow()">+ Add Course</button>
+      <div style="margin-top:22px;">
+        <button class="calc" onclick="calcCGPA()">Calculate CGPA</button>
+        <button class="clear" onclick="clearCGPA()">Clear</button>
+      </div>
+      <div class="result" id="cgpaResult">
+        <div class="label">Your CGPA</div>
+        <div class="big" id="cgpaValue">0.00</div>
+        <div class="breakdown" id="cgpaBreakdown"></div>
+      </div>
+    </div>
+    <article class="explainer">
+      <h3>How this works</h3>
+      <p>Enter each course's credit hours and the grade you received (or expect). The calculator converts each letter grade to its grade points on a 4.0 scale, multiplies by credit hours, and divides the total by your total credit hours — the standard formula used by Pakistani universities including University of the Punjab.</p>
+      <h3>FAQ</h3>
+      <p><strong>What grading scale is used?</strong> A standard 4.0 scale (A=4.0, A-=3.7, B+=3.3, B=3.0, B-=2.7, C+=2.3, C=2.0, C-=1.7, D=1.0, F=0.0). Some universities vary slightly — check your department's official policy for final results.</p>
+    </article>
+  </section>
+
+  <!-- MERIT PANEL -->
+  <section class="panel" id="merit">
+    <div class="sheet">
+      <h2>University Merit Aggregate Calculator</h2>
+      <div class="uni-select" id="uniSelect">
+        <button class="uni-btn active" data-uni="nust">NUST</button>
+        <button class="uni-btn" data-uni="fast">FAST</button>
+        <button class="uni-btn" data-uni="pu">PU</button>
+        <button class="uni-btn" data-uni="uet">UET Lahore</button>
+        <button class="uni-btn" data-uni="giki">GIKI</button>
+      </div>
+
+      <div class="formula-note" id="formulaNote"></div>
+
+      <div class="row">
+        <div class="field" id="matricField">
+          <label>Matric % (or O-Level equiv.)</label>
+          <input type="number" id="matricPct" min="0" max="100" step="0.01" placeholder="e.g. 88.5">
+        </div>
+        <div class="field">
+          <label id="fscLabel">FSc / Inter Part-1 %</label>
+          <input type="number" id="fscPct" min="0" max="100" step="0.01" placeholder="e.g. 85">
+        </div>
+        <div class="field">
+          <label id="testLabel">Entry Test %</label>
+          <input type="number" id="testPct" min="0" max="100" step="0.01" placeholder="e.g. 70">
+        </div>
+      </div>
+
+      <div style="margin-top:10px;">
+        <button class="calc" onclick="calcMerit()">Calculate Aggregate</button>
+        <button class="clear" onclick="clearMerit()">Clear</button>
+      </div>
+
+      <div class="result" id="meritResult">
+        <div class="label">Your Aggregate</div>
+        <div class="big" id="meritValue">0.00%</div>
+        <div class="breakdown" id="meritBreakdown"></div>
+      </div>
+    </div>
+    <article class="explainer">
+      <h3>How this works</h3>
+      <p>Each university weighs Matric, FSc/Intermediate, and entry test scores differently. Select your target university above, enter your percentages, and the calculator applies the exact official weightage for that university's 2026 admission cycle.</p>
+      <h3>FAQ</h3>
+      <p><strong>Are these formulas official?</strong> Yes, sourced from each university's published 2026 admission criteria. Formulas can change year to year — always cross-check with the university's official admissions page before applying.</p>
+      <p><strong>Why doesn't GIKI ask for Matric?</strong> GIKI's aggregate formula only weighs your most recent completed qualification (FSc) plus the admission test — Matric is used only for eligibility, not the merit score itself.</p>
+    </article>
+  </section>
+</main>
+
+<footer>
+  Formulas verified against official university admission pages, 2026 cycle. Always confirm against the official portal before applying. Built for students, by a student.
+</footer>
+
+<script>
+  // ---- Tabs ----
+  document.querySelectorAll('.tab').forEach(tab=>{
+    tab.addEventListener('click', ()=>{
+      document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById(tab.dataset.panel).classList.add('active');
+    });
+  });
+
+  // ---- CGPA Calculator ----
+  const gradePoints = {"A":4.0,"A-":3.7,"B+":3.3,"B":3.0,"B-":2.7,"C+":2.3,"C":2.0,"C-":1.7,"D":1.0,"F":0.0};
+  let courseCount = 0;
+
+  function addCourseRow(){
+    courseCount++;
+    const id = courseCount;
+    const div = document.createElement('div');
+    div.className = 'gpa-row';
+    div.id = 'course-'+id;
+    div.innerHTML = `
+      <div><label>Course Name</label>
+      <input type="text" placeholder="e.g. Data Structures" id="name-${id}"></div>
+      <div><label>Credit Hrs</label>
+      <input type="number" min="0" step="0.5" placeholder="3" id="credit-${id}"></div>
+      <div><label>Grade</label>
+      <select id="grade-${id}">
+        ${Object.keys(gradePoints).map(g=>`<option value="${g}">${g}</option>`).join('')}
+      </select></div>
+      <button class="remove-btn" onclick="document.getElementById('course-${id}').remove()">✕</button>
+    `;
+    document.getElementById('courseList').appendChild(div);
+  }
+  // seed with 3 rows
+  addCourseRow(); addCourseRow(); addCourseRow();
+
+  function calcCGPA(){
+    const rows = document.querySelectorAll('.gpa-row');
+    let totalPoints = 0, totalCredits = 0;
+    let breakdown = [];
+    rows.forEach(row=>{
+      const id = row.id.split('-')[1];
+      const credit = parseFloat(document.getElementById('credit-'+id).value);
+      const grade = document.getElementById('grade-'+id).value;
+      const name = document.getElementById('name-'+id).value || 'Course';
+      if(!isNaN(credit) && credit>0){
+        const pts = gradePoints[grade];
+        totalPoints += pts*credit;
+        totalCredits += credit;
+        breakdown.push(`<div><span>${name} (${credit} cr, ${grade})</span><span>${(pts*credit).toFixed(2)} pts</span></div>`);
+      }
+    });
+    if(totalCredits===0){
+      alert('Add at least one course with credit hours.');
+      return;
+    }
+    const cgpa = totalPoints/totalCredits;
+    document.getElementById('cgpaValue').textContent = cgpa.toFixed(2);
+    document.getElementById('cgpaBreakdown').innerHTML = breakdown.join('') +
+      `<div><strong>Total Credit Hours</strong><strong>${totalCredits}</strong></div>`;
+    document.getElementById('cgpaResult').classList.add('show');
+  }
+  function clearCGPA(){
+    document.getElementById('courseList').innerHTML = '';
+    courseCount = 0;
+    addCourseRow(); addCourseRow(); addCourseRow();
+    document.getElementById('cgpaResult').classList.remove('show');
+  }
+
+  // ---- Merit Calculator ----
+  const uniFormulas = {
+    nust: {
+      name:"NUST", matric:0.10, fsc:0.15, test:0.75,
+      note:"NUST 2026: Matric 10% + FSc Part-1 15% + NET 75%. The entry test dominates — a strong NET score matters far more than school marks.",
+      fscLabel:"FSc Part-1 %", testLabel:"NET Score %"
+    },
+    fast: {
+      name:"FAST", matric:0.10, fsc:0.40, test:0.50,
+      note:"FAST 2026 (Computing/Business): Matric 10% + FSc Part-1 40% + Entry Test 50%.",
+      fscLabel:"FSc Part-1 %", testLabel:"NU Test %"
+    },
+    pu: {
+      name:"PU", matric:0.25, fsc:0.50, test:0.25,
+      note:"Punjab University (PUCIT/FCIT) 2026: Matric 25% + FSc 50% + PU Entry Test 25%. Other PU departments may vary — verify with your specific department.",
+      fscLabel:"FSc %", testLabel:"PU Entry Test %"
+    },
+    uet: {
+      name:"UET Lahore", matric:0.17, fsc:0.50, test:0.33,
+      note:"UET Lahore Fall 2026: Matric 17% + FSc Part-1 50% + ECAT 33%.",
+      fscLabel:"FSc Part-1 %", testLabel:"ECAT %"
+    },
+    giki: {
+      name:"GIKI", matric:0, fsc:0.15, test:0.85,
+      note:"GIKI 2026: FSc 15% + Admission Test 85%. Matric is required for eligibility only — not counted in the aggregate.",
+      fscLabel:"FSc / Last Qualification %", testLabel:"GIKI Admission Test / SAT %"
+    }
+  };
+
+  let currentUni = 'nust';
+
+  function setUni(uni){
+    currentUni = uni;
+    document.querySelectorAll('.uni-btn').forEach(b=>b.classList.toggle('active', b.dataset.uni===uni));
+    const f = uniFormulas[uni];
+    document.getElementById('formulaNote').textContent = f.note;
+    document.getElementById('fscLabel').textContent = f.fscLabel;
+    document.getElementById('testLabel').textContent = f.testLabel;
+    document.getElementById('matricField').style.display = f.matric===0 ? 'none' : 'block';
+    document.getElementById('meritResult').classList.remove('show');
+  }
+
+  document.querySelectorAll('.uni-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>setUni(btn.dataset.uni));
+  });
+
+  function calcMerit(){
+    const f = uniFormulas[currentUni];
+    const matric = parseFloat(document.getElementById('matricPct').value) || 0;
+    const fsc = parseFloat(document.getElementById('fscPct').value) || 0;
+    const test = parseFloat(document.getElementById('testPct').value) || 0;
+
+    const matricContrib = matric * f.matric;
+    const fscContrib = fsc * f.fsc;
+    const testContrib = test * f.test;
+    const total = matricContrib + fscContrib + testContrib;
+
+    document.getElementById('meritValue').textContent = total.toFixed(2) + '%';
+    let rows = '';
+    if(f.matric>0) rows += `<div><span>Matric (${(f.matric*100).toFixed(0)}%)</span><span>${matricContrib.toFixed(2)}</span></div>`;
+    rows += `<div><span>${f.fscLabel} (${(f.fsc*100).toFixed(0)}%)</span><span>${fscContrib.toFixed(2)}</span></div>`;
+    rows += `<div><span>${f.testLabel} (${(f.test*100).toFixed(0)}%)</span><span>${testContrib.toFixed(2)}</span></div>`;
+    document.getElementById('meritBreakdown').innerHTML = rows;
+    document.getElementById('meritResult').classList.add('show');
+  }
+  function clearMerit(){
+    document.getElementById('matricPct').value='';
+    document.getElementById('fscPct').value='';
+    document.getElementById('testPct').value='';
+    document.getElementById('meritResult').classList.remove('show');
+  }
+
+  setUni('nust');
+</script>
+
+</body>
+</html>

@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://student-toolkit.vercel.app
+
+# Sitemaps
+Sitemap: https://student-toolkit.vercel.app/sitemap.xml
